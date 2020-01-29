@@ -14,7 +14,10 @@ def carregaImatgeColor(nom_fitxer: str) -> Dades:
        Una llista de llistes de 3-tuples que conté les dades de la imatge.
        Cada tupla conté la intensitat dels diferents canals de color de la següent manera: (vermell, verd, blau)
     """
-
+    with open(nom_fitxer, mode = 'r') as imatge:
+            line = imatge.readline()
+    return line
+carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
 def filaAEnters(fila: str) -> List[int]:
     """
     Converteix una cadena de caràcters composta per nombres separats per espais
@@ -26,6 +29,9 @@ def filaAEnters(fila: str) -> List[int]:
     Retorna:
        Una llista d'enters
     """
+    
+    line = imatge.readline()
+    intline = [int(n) for n in line]
 
 def filaColorApixels(fila: str) -> List[Pixel]:
     """
