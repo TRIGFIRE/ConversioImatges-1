@@ -80,22 +80,32 @@ def separaCanals(dades: Dades) -> Tuple[Dades, Dades, Dades]:
         Una 3-tupla que conté tres llistes de llistes de píxels.
         Corresponen respectivament als canals vermell, verd i blau respectivament.
     """
-    dadesvermell = ()
-    dadesverd = ()
-    dadesblau = ()
 
+    dadesvermell = []
+    dadesverd = []
+    dadesblau = []
+    tupletot = []
+    
     for line in dades:
         linevermell = []
         lineverd = []
         lineblau = []
-        pixel = line.pop(0)
-        vermell = pixel[0]
-        linevermell.append(vermell)
-        verd = pixel[1]
-        lineverd.append(verd)
-        blau = pixel[2]
-        lineblau.append(blau)
         
+        for pixel in line:
+            linevermell.append(pixel[0])
+            lineverd.append(pixel[1])
+            lineblau.append(pixel[2])
+            
+        dadesvermell.append(linevermell)
+        dadesverd.append(lineverd)
+        dadesblau.append(lineblau)
+        
+    tupletot.append(dadesvermell)
+    tupletot.append(dadesverd)
+    tupletot.append(dadesblau)
+    tupletot = tuple(tupletot)
+    return tupletot
+
 def converteixAGrisos(dades: Dades) -> Dades:
     """
     Converteix les dades d'una imatge a escala de grisos tenint en compte la sentibilitat de l'ull a cadascun dels colors.
@@ -108,6 +118,12 @@ def converteixAGrisos(dades: Dades) -> Dades:
     Retorna:
         Una llista de llistes d'enters que representen la intensitat del blanc per cadascun dels píxels en una imatge amb escala de grisos.
     """
+    for line in dades:
+        greyline = []
+        for pixel in line:
+            greypixel = 0
+            greypixel = (pixel[0]*.30 + pixel[1]*.59 + pixel[2]*.11)
+            greyline.append(greypixel)
 
 def valorMàxim(dades: Dades) -> int:
     """
