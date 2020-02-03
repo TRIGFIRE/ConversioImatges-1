@@ -14,11 +14,23 @@ def carregaImatgeColor(nom_fitxer: str) -> Dades:
        Una llista de llistes de 3-tuples que conté les dades de la imatge.
        Cada tupla conté la intensitat dels diferents canals de color de la següent manera: (vermell, verd, blau)
     """
+    lines = []
+    intlines = []
+    tuplelines = []
     with open(nom_fitxer, mode = 'r') as imatge:
-            line = imatge.readline()
-    return line
-carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
-def filaAEnters(fila: str) -> List[int]:
+            lines = imatge.readlines()
+            lines.pop(0)
+            lines.pop(0)
+            lines.pop(0)
+            for line in lines:
+                intlines.append(filaAEnters(line))
+            for line in intlines:
+                tuplelines.append(filaColorApixels(line))
+    return tuplelines
+
+# carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
+
+def filaAEnters(line: str) -> List[int]:
     """
     Converteix una cadena de caràcters composta per nombres separats per espais
     en una llista d'enters.
@@ -29,11 +41,14 @@ def filaAEnters(fila: str) -> List[int]:
     Retorna:
        Una llista d'enters
     """
-    
-    line = imatge.readline()
+    intlines =[]
+    line = line.split()
     intline = [int(n) for n in line]
+    intlines += intline
+    return intlines
+# filaAEnters('226 137 125 226 137 125 223 137 133 223 136 128 226 138 120 226')
 
-def filaColorApixels(fila: str) -> List[Pixel]:
+def filaColorApixels(line: str) -> List[Pixel]:
     """
     Converteix una cadena de caràcters composta per nombres separats per espais
     en una llista de píxels representats per 3-tuples.
@@ -45,6 +60,13 @@ def filaColorApixels(fila: str) -> List[Pixel]:
        Una llista de 3-tuples.
        Cada tupla conté la intensitat dels diferents canals de color de la següent manera: (vermell, verd, blau)
     """
+    tupleline = []
+
+    while len(line) != 0:
+        tupleline.append((line.pop(0), line.pop(0), line.pop(0)))
+    return tupleline
+
+# filaColorApixels([226, 137, 125, 226, 137, 125, 223, 137, 133, 223, 136, 128, 226, 138, 120, 226, 129, 116, 228, 138, 123, 227, 134, 124, 227, 140])
 
 def separaCanals(dades: Dades) -> Tuple[Dades, Dades, Dades]:
     """
@@ -58,8 +80,22 @@ def separaCanals(dades: Dades) -> Tuple[Dades, Dades, Dades]:
         Una 3-tupla que conté tres llistes de llistes de píxels.
         Corresponen respectivament als canals vermell, verd i blau respectivament.
     """
+    dadesvermell = ()
+    dadesverd = ()
+    dadesblau = ()
 
-
+    for line in dades:
+        linevermell = []
+        lineverd = []
+        lineblau = []
+        pixel = line.pop(0)
+        vermell = pixel[0]
+        linevermell.append(vermell)
+        verd = pixel[1]
+        lineverd.append(verd)
+        blau = pixel[2]
+        lineblau.append(blau)
+        
 def converteixAGrisos(dades: Dades) -> Dades:
     """
     Converteix les dades d'una imatge a escala de grisos tenint en compte la sentibilitat de l'ull a cadascun dels colors.
@@ -121,3 +157,4 @@ def escriuImatge(dades: Dades, nom: str):
         dades: Llista de llistes de píxels representats o bé per enters o bé per 3-tuples.
         nom: Cadena de caràcters que representa el nom del fitxer a escriure sense extensió.
     """
+carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
