@@ -28,8 +28,6 @@ def carregaImatgeColor(nom_fitxer: str) -> Dades:
                 tuplelines.append(filaColorApixels(line))
     return tuplelines
 
-# carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
-
 def filaAEnters(line: str) -> List[int]:
     """
     Converteix una cadena de caràcters composta per nombres separats per espais
@@ -46,7 +44,6 @@ def filaAEnters(line: str) -> List[int]:
     intline = [int(n) for n in line]
     intlines += intline
     return intlines
-# filaAEnters('226 137 125 226 137 125 223 137 133 223 136 128 226 138 120 226')
 
 def filaColorApixels(line: str) -> List[Pixel]:
     """
@@ -65,8 +62,6 @@ def filaColorApixels(line: str) -> List[Pixel]:
     while len(line) != 0:
         tupleline.append((line.pop(0), line.pop(0), line.pop(0)))
     return tupleline
-
-# filaColorApixels([226, 137, 125, 226, 137, 125, 223, 137, 133, 223, 136, 128, 226, 138, 120, 226, 129, 116, 228, 138, 123, 227, 134, 124, 227, 140])
 
 def separaCanals(dades: Dades) -> Tuple[Dades, Dades, Dades]:
     """
@@ -118,12 +113,13 @@ def converteixAGrisos(dades: Dades) -> Dades:
     Retorna:
         Una llista de llistes d'enters que representen la intensitat del blanc per cadascun dels píxels en una imatge amb escala de grisos.
     """
+    dadesgris = []
     for line in dades:
-        greyline = []
+        lineagris = []
         for pixel in line:
-            greypixel = 0
-            greypixel = (pixel[0]*.30 + pixel[1]*.59 + pixel[2]*.11)
-            greyline.append(greypixel)
+            lineagris.append((pixel[0]*.30 + pixel[1]*.59 + pixel[2]*.11))
+        dadesgris.append(lineagris)
+    return dadesgris
 
 def valorMàxim(dades: Dades) -> int:
     """
@@ -136,7 +132,21 @@ def valorMàxim(dades: Dades) -> int:
     Retorna:
         Un enter amb el valor màxim que conté un píxel de la imatge per a qualsevol canal.
     """
-
+    maxim = 0
+    try:
+        for line in dades:
+            for pixel in line:
+                possiblemaxim = max(pixel)
+                if possiblemaxim > maxim:
+                    maxim = possiblemaxim
+        return maxim
+    except:
+        for line in dades:
+            possiblemaxim = max(line)
+            if possiblemaxim > maxim:
+                maxim = possiblemaxim
+        return maxim
+        
 def dimensions(dades: Dades) -> (int, int):
     """
     Calcula les dimensions d'una imatge a partir de la llista de llistes de píxels.
@@ -148,6 +158,8 @@ def dimensions(dades: Dades) -> (int, int):
     Retorna:
         Una 2-tupla amb les dimensions de la imatge de la següent manera (amplada, alçada).
     """
+
+    return tuple((len(dades[0]), len(dades)))
 
 def detectaTipus(dades: Dades) -> (str, str):
     """
@@ -163,7 +175,18 @@ def detectaTipus(dades: Dades) -> (str, str):
     Retorna:
         Una 2-tupla de cadenes de caràcters amb la informació de la capçalera ('P1', 'P2', 'P3' segons sigui una imatge en Blanc i negre, en escala de grisos o en color) en el primer element i l'extensió ('ppm', 'pbm', 'pgm' respectivament) en el segon.
     """
-
+    tupla2 = []    
+    line = dades[0]
+    pixel = line[0]
+    try:
+        if len(pixel) == 3:
+            return ['P3', 'ppm']
+    except:
+        if valorMàxim(dades) > 1:
+            return ['P2', 'pgm']
+        else:
+            return ['P1', 'pbm']
+            
 def escriuImatge(dades: Dades, nom: str):
     """
     Escriu les dades d'una imatge en un fitxer. Identifica automàticament el tipus d'imatge i l'extensió que cal fer servir.
@@ -173,4 +196,10 @@ def escriuImatge(dades: Dades, nom: str):
         dades: Llista de llistes de píxels representats o bé per enters o bé per 3-tuples.
         nom: Cadena de caràcters que representa el nom del fitxer a escriure sense extensió.
     """
+    tipus = detectaTipus(dades)
+    line1 = tipus[0]
+    line2 = dimensions(dades)
+    
+    
+    
 carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
