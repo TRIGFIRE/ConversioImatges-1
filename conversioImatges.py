@@ -94,12 +94,8 @@ def separaCanals(dades: Dades) -> Tuple[Dades, Dades, Dades]:
         dadesvermell.append(linevermell)
         dadesverd.append(lineverd)
         dadesblau.append(lineblau)
-        
-    tupletot.append(dadesvermell)
-    tupletot.append(dadesverd)
-    tupletot.append(dadesblau)
-    tupletot = tuple(tupletot)
-    return tupletot
+
+    return (dadesvermell, dadesverd, dadesblau)
 
 def converteixAGrisos(dades: Dades) -> Dades:
     """
@@ -117,7 +113,7 @@ def converteixAGrisos(dades: Dades) -> Dades:
     for line in dades:
         lineagris = []
         for pixel in line:
-            lineagris.append((pixel[0]*.30 + pixel[1]*.59 + pixel[2]*.11))
+            lineagris.append(int(pixel[0]*.30 + pixel[1]*.59 + pixel[2]*.11))
         dadesgris.append(lineagris)
     return dadesgris
 
@@ -159,7 +155,7 @@ def dimensions(dades: Dades) -> (int, int):
         Una 2-tupla amb les dimensions de la imatge de la següent manera (amplada, alçada).
     """
 
-    return tuple((len(dades[0]), len(dades)))
+    return (len(dades[0]), len(dades))
 
 def detectaTipus(dades: Dades) -> (str, str):
     """
@@ -175,17 +171,16 @@ def detectaTipus(dades: Dades) -> (str, str):
     Retorna:
         Una 2-tupla de cadenes de caràcters amb la informació de la capçalera ('P1', 'P2', 'P3' segons sigui una imatge en Blanc i negre, en escala de grisos o en color) en el primer element i l'extensió ('ppm', 'pbm', 'pgm' respectivament) en el segon.
     """
-    tupla2 = []    
     line = dades[0]
     pixel = line[0]
     try:
         if len(pixel) == 3:
-            return ['P3', 'ppm']
+            return ('P3', 'ppm')
     except:
         if valorMàxim(dades) > 1:
-            return ['P2', 'pgm']
+            return ('P2', 'pgm')
         else:
-            return ['P1', 'pbm']
+            return ('P1', 'pbm')
             
 def escriuImatge(dades: Dades, nom: str):
     """
@@ -198,8 +193,21 @@ def escriuImatge(dades: Dades, nom: str):
     """
     tipus = detectaTipus(dades)
     line1 = tipus[0]
-    line2 = dimensions(dades)
+    dimensionsimatge = dimensions(dades)
+    line3 = str(valorMàxim(dades))
+    with open(nom + '.' + tipus[1], mode = 'w') as imatge:
+        imatge.write(line1 + '\n')
+        imatge.write(str(dimensionsimatge[0]) + ' ' + str(dimensionsimatge[1]) + '\n')
+        imatge.write(line3 + '\n')
+        for line in dades:
+            for pixel in dades:
+                for i in range(2):
+                    imatge.write(str(pixel[i]) + ' ')
+#                 imatge.write(str(pixel[0]) + ' ' + str(pixel[1]) + ' ' + str(pixel[2]) + ' ')
+            imatge.write('\n')
+            
     
     
     
-carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
+dades = carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
+escriuImatge(dades, 'fitxerprova2')
