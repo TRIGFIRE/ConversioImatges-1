@@ -18,14 +18,14 @@ def carregaImatgeColor(nom_fitxer: str) -> Dades:
     intlines = []
     tuplelines = []
     with open(nom_fitxer, mode = 'r') as imatge:
-            lines = imatge.readlines()
-            lines.pop(0)
-            lines.pop(0)
-            lines.pop(0)
-            for line in lines:
-                intlines.append(filaAEnters(line))
-            for line in intlines:
-                tuplelines.append(filaColorApixels(line))
+        lines = imatge.readlines()
+        lines.pop(0)
+        lines.pop(0)
+        lines.pop(0)
+        for line in lines:
+            intlines.append(filaAEnters(line))
+        for line in intlines:
+            tuplelines.append(filaColorApixels(line))
     return tuplelines
 
 def filaAEnters(line: str) -> List[int]:
@@ -79,7 +79,6 @@ def separaCanals(dades: Dades) -> Tuple[Dades, Dades, Dades]:
     dadesvermell = []
     dadesverd = []
     dadesblau = []
-    tupletot = []
     
     for line in dades:
         linevermell = []
@@ -194,17 +193,33 @@ def escriuImatge(dades: Dades, nom: str):
     tipus = detectaTipus(dades)
     line1 = tipus[0]
     dimensionsimatge = dimensions(dades)
-    line3 = str(valorMàxim(dades))
+    maxim = valorMàxim(dades)
+    if 1 < maxim < 255 :
+        maxim = 255
     with open(nom + '.' + tipus[1], mode = 'w') as imatge:
         imatge.write(line1 + '\n')
         imatge.write(str(dimensionsimatge[0]) + ' ' + str(dimensionsimatge[1]) + '\n')
-        imatge.write(line3 + '\n')
-        for line in dades:
-            for pixel in dades:
-                for i in range(2):
-                    imatge.write(str(pixel[i]) + ' ')
-#                 imatge.write(str(pixel[0]) + ' ' + str(pixel[1]) + ' ' + str(pixel[2]) + ' ')
-            imatge.write('\n')
+        imatge.write(str(maxim) + '\n')
+        if line1 == 'P3':
+            for line in dades:
+                try:
+                    for pixel in line:
+                        imatge.write(str(pixel[0]) + ' ')
+                        imatge.write(str(pixel[1]) + ' ')
+                        imatge.write(str(pixel[2]) + ' ')
+                    imatge.write('\n')
+                except:
+                    for pixel in line:
+                        imatge.write(str(pixel) + ' ')
+                        imatge.write('0 ')
+                        imatge.write('0 ')
+                    imatge.write('\n')
+
+        if line1 != 'P3':
+            for line in dades:
+                for pixel in line:
+                    imatge.write(str(pixel) + ' ')
+                imatge.write('\n')
             
     
     
