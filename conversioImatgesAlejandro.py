@@ -16,7 +16,8 @@ def carregaImatgeColor(nom_fitxer: str) -> Dades:
     """
     lines = []
     intlines = []
-    tuplelines = []
+    tuplelines = []    return int(math.sqrt(area))
+
     with open(nom_fitxer, mode = 'r') as imatge:
         lines = imatge.readlines()
         lines.pop(0)
@@ -141,6 +142,67 @@ def valorMàxim(dades: Dades) -> int:
             if possiblemaxim > maxim:
                 maxim = possiblemaxim
         return maxim
+def llindar_valor(imatge: Dades, valor: int) -> Dades:
+    """
+    Transforma una imatge en escala de grisos a una imatge en blanc i negre.
+    Utilitza el 'valor' de valor llindar. Els píxels que quedin per sobre del
+    valor llindar es transformaran en blancs i els que quedin per sota o amb el
+    mateix valor, es tornaran negres.
+
+    Arguments:
+      imatge: Una llista de llista de píxels corresponents a una imatge en
+        escala de grisos
+      valor: Un enter que representa un valor que defineix el llindar dels
+        valors que es convertiran en píxels blancs o negres
+
+    Retorna:
+      Una llista de llistes d'enters (0s o 1s) que representen una imatge en
+      blanc i negre.
+
+    >>> llindar_valor([[125, 100, 75], [50, 255, 200]], 100)
+    [[0, 1, 1], [1, 0, 0]]
+    """
+    return[[0 if pixel >= valor else 1 for pixel in line] for line in imatge]
+# llindar_valor([[125, 100, 75], [50, 255, 200]], 100)
+def inverteix_verticalment(imatge: Dades) -> Dades:
+    """
+    Inverteix una imatge verticalment.
+
+    Arguments:
+      imatge: Llista de llistes (matriu) de píxels (ja sigui en escala de
+      grisos o en color) que invertirà la funció.
+
+    Retorna:
+      Matriu de píxels que conté la imatge original invertida verticalment.
+
+    >>> inverteix_verticalment([[125,100,75],[50, 255, 200]])
+    [[50, 255, 200], [125, 100, 75]]
+
+    >>> inverteix_verticalment([[1,11,111,1111], [2,22,222,2222], [3,33,333,3333], [4,44,444,4444]])
+    [[4, 44, 444, 4444], [3, 33, 333, 3333], [2, 22, 222, 2222], [1, 11, 111, 1111]]
+    """
+    return [line for line in reversed(imatge)]
+
+
+def inverteix_horitzontalment(imatge: Dades) -> Dades:
+    """
+    Inverteix una imatge horitzontalment.
+
+    Arguments:
+      imatge: Llista de llistes (matriu) de píxels (ja sigui en escala de
+      grisos o en color) que invertirà la funció.
+
+    Retorna:
+      Matriu de píxels que conté la imatge original invertida verticalment.
+
+    >>> inverteix_horitzontalment([[125,100,75],[50, 255, 200]])
+    [[75, 100, 125], [200, 255, 50]]
+
+    >>> inverteix_horitzontalment([[1,11,111,1111], [2,22,222,2222], [3,33,333,3333], [4,44,444,4444]])
+    [[1111, 111, 11, 1], [2222, 222, 22, 2], [3333, 333, 33, 3], [4444, 444, 44, 4]]
+    """
+
+    return [list(reversed(line)) for line in imatge]
 
 def dadespercanal(canals):
     '''
