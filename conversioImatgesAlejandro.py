@@ -141,7 +141,65 @@ def valorMàxim(dades: Dades) -> int:
             if possiblemaxim > maxim:
                 maxim = possiblemaxim
         return maxim
-        
+
+def dadespercanal(canals):
+    '''
+    Aquesta funció serveix per preparar les dades en un
+    cert color (vermell, verd o blau) en format ppm.
+    Argument:
+        Les dades de la fotogafia separades a colors.
+    Rertorna:
+        Les dades en ppm en el color que ens interesi.
+    '''
+    dades = []
+    color = input('Prem 1 per vermell, prem 2 per verd i prem 3 per blau: ')
+    if color == '1':
+        vermells = canals[0]
+        for line in vermells:
+            lineavermells = []
+            for pixel in line:
+                noupixel = []
+                noupixel.append(pixel)
+                noupixel.append(0)
+                noupixel.append(0)
+                pixeltuple = tuple(noupixel)
+                lineavermells.append(pixeltuple)
+
+            dades.append(lineavermells)
+    
+        return dades
+    
+    if color == '2':
+        verds = canals[1]
+        for line in verds:
+            lineaverds = []
+            for pixel in line:
+                noupixel = []
+                noupixel.append(0)
+                noupixel.append(pixel)
+                noupixel.append(0)
+                pixeltuple = tuple(noupixel)
+                lineaverds.append(pixeltuple)
+
+            dades.append(lineaverds)
+        return dades
+    
+    if color == '3':
+        blaus = canals[2]
+        for line in blaus:
+            lineablaus = []
+            for pixel in line:
+                noupixel = []
+                noupixel.append(0)
+                noupixel.append(0)
+                noupixel.append(pixel)
+                pixeltuple = tuple(noupixel)
+                lineablaus.append(pixeltuple)
+
+            dades.append(lineablaus)
+    
+        return dades
+    
 def dimensions(dades: Dades) -> (int, int):
     """
     Calcula les dimensions d'una imatge a partir de la llista de llistes de píxels.
@@ -202,27 +260,15 @@ def escriuImatge(dades: Dades, nom: str):
         imatge.write(str(maxim) + '\n')
         if line1 == 'P3':
             for line in dades:
-                try:
-                    for pixel in line:
-                        imatge.write(str(pixel[0]) + ' ')
-                        imatge.write(str(pixel[1]) + ' ')
-                        imatge.write(str(pixel[2]) + ' ')
-                    imatge.write('\n')
-                except:
-                    for pixel in line:
-                        imatge.write(str(pixel) + ' ')
-                        imatge.write('0 ')
-                        imatge.write('0 ')
-                    imatge.write('\n')
+                for pixel in line:
+                    imatge.write(str(pixel[0]) + ' ')
+                    imatge.write(str(pixel[1]) + ' ')
+                    imatge.write(str(pixel[2]) + ' ')
+                imatge.write('\n')
+
 
         if line1 != 'P3':
             for line in dades:
                 for pixel in line:
                     imatge.write(str(pixel) + ' ')
                 imatge.write('\n')
-            
-    
-    
-    
-dades = carregaImatgeColor('Imatges Prova/Lena/lena_ascii_arreglada.ppm')
-escriuImatge(dades, 'fitxerprova2')
